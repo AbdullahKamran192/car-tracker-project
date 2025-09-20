@@ -1,0 +1,6 @@
+path: "C:/Users/abdul/Desktop/car-tracker-project/Python/data"
+
+train: images/train
+val: images/train   # same as train for now
+
+names: ["number_plates"]
