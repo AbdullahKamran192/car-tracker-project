@@ -3,6 +3,9 @@ import os
 from ultralytics import YOLO
 import cv2
 
+def detect_number_plate_method_newOne_rename_later(frame):
+    pass
+
 def detect_number_plate_method():
 
     VIDEOS_DIR = os.path.join('.', 'Python', 'videos')
