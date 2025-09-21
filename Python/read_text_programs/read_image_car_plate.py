@@ -102,28 +102,6 @@ def read_adjusted_image_method(img, thresh_value=100):
 
     #cv2.waitKey(0)
 
-
-
-#test one image
-def test_image(filename):
-
-    image_path = f'./plates2/{filename}.jpg'
-    img = cv2.imread(image_path)
-
-    plate_text = read_adjusted_image_method(img)
-
-    print(f"The {filename} is {plate_text.upper()}.")
-
-    plate_text = plate_text.upper()
-
-    if plate_text == correct_plates_text.get(filename):
-        print(f"{plate_text} was read correctly")
-
-#test_image('scanned_img_102')
-
-
-
-
 #tests multiple images in one go. for example test read every image in the plates2 folder.
 def test_images_method2():
 
@@ -147,16 +125,20 @@ def test_images_method2():
                 correct_plates_read_count += 1
                 break
 
+
+
+
+#======================  FIRST  ==========================
+#Firstly check if an image contains text and move it to images-with-text folder.
+#Delete the images with no text detected.
+
 def count_files_with_text_detected_method():
 
     count_files_with_text_detected = 0
 
-    for i in range(1, 200):
-        img_name = f'scanned_img_{i}.jpg'
-        image_path = f'./plates2/{img_name}'
+    for file in os.listdir("Python/plates"):
+        image_path = f'Python/plates/{file}'
         img = cv2.imread(image_path)
-
-        print(f'The value of i is {i}')
 
         try:
             plate_text = read_adjusted_image_method(img)
@@ -169,19 +151,67 @@ def count_files_with_text_detected_method():
 
         if len(plate_text) > 0:
             count_files_with_text_detected += 1
-            #move that file
-            destination = f'./images_with_text/{img_name}'
+            #text detected --> move that file
+            destination = f'Python/images_with_text/{file}'
 
             if os.path.exists(destination):
                 print("There is already a file there")
             else:
                 os.replace(image_path, destination)
-                
+        else:
+            #no text detected --> delete that file
+            os.remove(f'Python/plates/{file}')
 
     
     print(f'{count_files_with_text_detected} FILES WERE READ!!!!')
 
+
+
 count_files_with_text_detected_method()
+
+#=========================================================
+
+
+#======================  SECOND  ==========================
+#Secondly check if the text/plate read already exist/stored on our system for today
+#through features like similarity checker.
+
+#def similarity_plate_checker():
+#    pass
+
+#=========================================================
+
+
+
+
+
+
+
+
+
+
+
+
+
+"""
+EXTRA CODE. YOU CAN ADD LATER.
+"""
+
+#test one image
+def test_image(filename):
+
+    image_path = f'./plates2/{filename}.jpg'
+    img = cv2.imread(image_path)
+
+    plate_text = read_adjusted_image_method(img)
+
+    print(f"The {filename} is {plate_text.upper()}.")
+
+    plate_text = plate_text.upper()
+
+    if plate_text == correct_plates_text.get(filename):
+        print(f"{plate_text} was read correctly")
+
 
 #test reading the images on different thresh values makes it more like that an image is read.
 #It does take more computing power and time, but if you are interested, you can use it.
