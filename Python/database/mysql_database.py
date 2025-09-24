@@ -24,7 +24,8 @@ mycursor = conn.cursor()
 
 mycursor.execute("""CREATE TABLE IF NOT EXISTS Cars (
                  registration_number VARCHAR(50),
-                 Make VARCHAR(50), Colour VARCHAR(50),
+                 make VARCHAR(50), Colour VARCHAR(50),
+                 image_name VARCHAR(50),
                  time DATETIME
                  )
                  """)
@@ -36,8 +37,8 @@ def getCar(reg_number):
     return mycursor.fetchall()
 
 
-def insertCar(reg_number, make, colour):
-    sql = "INSERT INTO Cars VALUES (%s,%s,%s, NOW())"
-    mycursor.execute(sql, (reg_number, make, colour))
+def insertCar(reg_number, make, colour, image_name):
+    sql = "INSERT INTO Cars VALUES (%s,%s,%s,%s, NOW())"
+    mycursor.execute(sql, (reg_number, make, colour, image_name))
     conn.commit()
 

@@ -1,6 +1,9 @@
 import os
 import cv2
 import time
+import random
+import string
+import boto3
 
 from detect_number_plates.predict_write_images import detect_number_plate_method
 from read_text_programs.read_image_car_plate import detect_number_plate_text
@@ -8,6 +11,9 @@ from openai_api.openai_api_read_image_text import openai_read_image
 import database.mysql_database as database
 from dvla_api.dvla_api_get_car_info import get_car_info
 
+
+s3 = boto3.client('s3')
+bucket_name = 'test-bucket-123pdf123'
 
 
 VIDEOS_DIR = os.path.join('.', 'Python', 'videos')
@@ -24,6 +30,12 @@ while ret:
     if frame_counter % frame_read == 0:
         frame_counter += 1
         frame = cv2.resize(frame, (1920, 1080))
+
+        for file in os.listdir("Python/current_frame"):
+            if os.path.exists(f'Python/current_frame/{file}'):
+                os.remove(f'Python/current_frame/{file}')
+
+        cv2.imwrite('Python/current_frame/current_frame.jpg', frame)
 
         cv2.imshow("frame", frame)
         cv2.waitKey(1)
@@ -68,21 +80,26 @@ while ret:
             if check_plate_on_database:
                 os.remove(plate_path)
             else:
-                #get data from DVLA.
+                #5. get data from DVLA.
                 car_info = get_car_info(plate_text.upper())
-                #print(f"The car info: {car_info}")
 
-                #store info on database
                 if car_info:
+                    #6. Store image to AWS
+                    length = 16
+                    random_file_name = ''.join(random.choices(string.ascii_letters + string.digits, k=length))
+
+                    file_name = f'{random_file_name}.jpg'
+                    s3.upload_file("Python/current_frame/current_frame.jpg", bucket_name, file_name)
+                    print("======================== IMAGE STORED TO AWS ========================")
+
+                    #7. store info on database
+
                     print(f"Storing to database: {car_info["registrationNumber"]}, {car_info["make"]}, {car_info["colour"]}")
-                    database.insertCar(car_info["registrationNumber"], car_info["make"], car_info["colour"])
+                    database.insertCar(car_info["registrationNumber"], car_info["make"], car_info["colour"], random_file_name)
 
-        
-        # 5. DVLA api fetch car info
 
-        # 6. Store info on database
 
-        # 7. Clear the plates folder
+        # 8. Clear the plates folder
 
         for file in os.listdir("Python/plates"):
             if os.path.exists(f'Python/plates/{file}'):

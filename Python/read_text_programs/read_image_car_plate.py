@@ -77,8 +77,6 @@ def read_adjusted_image_method(img, thresh_value=100):
     return ""
 
 
-
-
 #detect_number_plate_text() checks if an image contains text and returns TRUE or FALSE.
 def detect_number_plate_text(frame):
     
