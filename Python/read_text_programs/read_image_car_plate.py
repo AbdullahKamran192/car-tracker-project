@@ -7,27 +7,6 @@ import time
 import os
 
 
-#print("Welcome to ", str(sys.argv))
-
-#sentence = 'Welcome to ' + str(sys.argv)
-
-correct_plates_text = {
-    "plate1": "RV59 VRO",
-    "plate2": "LY66 FCO",
-    "plate3": "EK67 XUL",
-    "plate4": "EY66 ZXC",
-    "plate5": "JCC 3P",
-    "plate6": "ND66 YEJ",
-    "plate7": "KY68 WZM",
-    "plate8": "LB02 APF",
-    "plate9": "BN65 GTU",
-    "plate10": "SJ10 HLR",
-    "plate11": "MY 2 OHMS", # remove this plate, no one really knows if its 0 or O
-    "plate12": "NO67 GAS"
-}
-
-car_plates_read = []
-
 def read_adjusted_image_method(img, thresh_value=100):
 
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -98,136 +77,15 @@ def read_adjusted_image_method(img, thresh_value=100):
     return ""
 
 
-    #===========================================================
-
-    #cv2.waitKey(0)
-
-#tests multiple images in one go. for example test read every image in the plates2 folder.
-def test_images_method2():
-
-    correct_plates_read_count = 0
-
-    for i in range(1,12):
-        plate = f"plate{i}"
-        image_path = f'data/{plate}.jpg'
-        img = cv2.imread(image_path)
-
-        for thresh_value in range(0, 255, 10):
-
-            plate_text = read_adjusted_image_method(img, thresh_value=thresh_value)
-
-            print(f"The {plate} is {plate_text.upper()}.")
-
-            plate_text = plate_text.upper()
-
-            if plate_text == correct_plates_text.get(plate):
-                print(f"{plate_text} was read correctly")
-                correct_plates_read_count += 1
-                break
-
-
-
-
-#======================  FIRST  ==========================
-#Firstly check if an image contains text and move it to images-with-text folder.
-#Delete the images with no text detected.
-
-def count_files_with_text_detected_method():
-
-    count_files_with_text_detected = 0
-
-    for file in os.listdir("Python/plates"):
-        image_path = f'Python/plates/{file}'
-        img = cv2.imread(image_path)
-
-        try:
-            plate_text = read_adjusted_image_method(img)
-        except Exception:
-            print("Something went wrong")
-            continue
-        print(f"The {image_path} is {plate_text.upper()}.")
-
-        #plate_text = plate_text.upper()
-
-        if len(plate_text) > 0:
-            count_files_with_text_detected += 1
-            #text detected --> move that file
-            destination = f'Python/images_with_text/{file}'
-
-            if os.path.exists(destination):
-                print("There is already a file there")
-            else:
-                os.replace(image_path, destination)
-        else:
-            #no text detected --> delete that file
-            os.remove(f'Python/plates/{file}')
-
+#detect_number_plate_text() checks if an image contains text and returns TRUE or FALSE.
+def detect_number_plate_text(frame):
     
-    print(f'{count_files_with_text_detected} FILES WERE READ!!!!')
-
-
-
-count_files_with_text_detected_method()
-
-#=========================================================
-
-
-#======================  SECOND  ==========================
-#Secondly check if the text/plate read already exist/stored on our system for today
-#through features like similarity checker.
-
-#def similarity_plate_checker():
-#    pass
-
-#=========================================================
-
-
-
-
-
-
-
-
-
-
-
-
-
-"""
-EXTRA CODE. YOU CAN ADD LATER.
-"""
-
-#test one image
-def test_image(filename):
-
-    image_path = f'./plates2/{filename}.jpg'
-    img = cv2.imread(image_path)
-
-    plate_text = read_adjusted_image_method(img)
-
-    print(f"The {filename} is {plate_text.upper()}.")
-
-    plate_text = plate_text.upper()
-
-    if plate_text == correct_plates_text.get(filename):
-        print(f"{plate_text} was read correctly")
-
-
-#test reading the images on different thresh values makes it more like that an image is read.
-#It does take more computing power and time, but if you are interested, you can use it.
-def test_image_threshes(filename):
-    image_path = f'data/{filename}.jpg'
-    img = cv2.imread(image_path)
-
-    for thresh_value in range(0, 255, 10):
-        plate_text = read_adjusted_image_method(img, thresh_value=thresh_value)
-
-        print(f"The {filename} is {plate_text.upper()}.")
-
-        plate_text = plate_text.upper()
-
-        if plate_text == correct_plates_text.get(filename):
-            print(f"{plate_text} was read correctly")
-            break
-
-#sys.stdout.flush()
+    try:
+        plate_text = read_adjusted_image_method(frame)
+    except Exception:
+        print("Something went wrong")
+    
+    if plate_text and len(plate_text) > 0:
+        return True
+    else:
+        return False
