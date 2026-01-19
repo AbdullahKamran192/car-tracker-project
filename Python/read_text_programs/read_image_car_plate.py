@@ -82,10 +82,10 @@ def detect_number_plate_text(frame):
     
     try:
         plate_text = read_adjusted_image_method(frame)
+        
+        if plate_text and len(plate_text) > 0:
+            return True
+        else:
+            return False
     except Exception:
         print("Something went wrong")
-    
-    if plate_text and len(plate_text) > 0:
-        return True
-    else:
-        return False
