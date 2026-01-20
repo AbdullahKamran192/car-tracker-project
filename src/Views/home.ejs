@@ -4,12 +4,39 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home page</title>
+
+    <link rel="stylesheet" href="/Stylesheets/style.css">
 </head>
 <body>
-    <h1>Cars today:</h1>
-    <% cars.forEach( car => { %>
-        <li><%= car.registration_number %> <%= car.make %> <%= car.Colour %> <%= car.image_name %> <%= car.time %></li>
-        <br>
-    <% }) %>
+
+    <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/cars">Cars</a></li>
+    </ul>
+
+
+    <h1>Cars recorded:</h1>
+
+    <table>
+        <tr>
+            <th>Registration number</th>
+            <th>Car make</th>
+            <th>Car colour</th>
+            <th>Image name</th>
+            <th>time</th>
+        </tr>
+        <% cars.forEach( car => { %>
+            <tr>
+                <th ><a href="/cars/<%=car.image_name%>"><%= car.registration_number %></a></th>
+                <th><%= car.make %></th>
+                <th><%= car.Colour %></th>
+                <th><%= car.image_name %></th>
+                <th><%= car.time %></th>
+                <th><button style="background-color: red; color: white;" onclick="handleDelete('<%= car.image_name %>')">Delete</button></th>
+            </tr>
+        <% }) %>
+    </table>
+
+    <script src="/Javascripts/cars.js"></script>
 </body>
 </html>
