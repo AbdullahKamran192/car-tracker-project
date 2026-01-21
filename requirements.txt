@@ -1,0 +1,12 @@
+boto3==1.40.37
+easyocr==1.7.2
+matplotlib==3.10.8
+numpy==2.4.1
+openai==2.15.0
+opencv_contrib_python
+opencv_python
+opencv_python_headless
+Requests==2.32.5
+ultralytics==8.3.201
+dotenv
+mysql-connector-python

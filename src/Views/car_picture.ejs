@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home page</title>
+
+    <link rel="stylesheet" href="/Stylesheets/car_detail.css">
+</head>
+<body>
+    <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/cars">Cars</a></li>
+    </ul>
+
+    <img style="width: 50%; height: auto;" src="<%= car.httpURL %>">
+    <p>Number plate: <%= car.registration_number %></p>
+    <p>Car make: <%= car.make %></p>
+    <p>Car colour: <%= car.Colour %></p>
+    <p>Image name: <%= car.image_name %></p>
+    <p>Time: <%= car.time %></p>
+
+    <script src="/Javascripts/car_detail.js"></script>
+</body>
+</html>
