@@ -36,7 +36,7 @@ app.use(express.static('./src/Public'))
 app.use(carsRouter)
 
 app.get("/", (req, res) => {
-    res.send("Hello, there!")
+    res.render('home')
 })
 
 

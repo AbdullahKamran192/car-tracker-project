@@ -38,7 +38,7 @@ carsRouter.get("/cars", async (req, res) => {
         car.httpURL = url;
     }
 
-    res.render('home', {
+    res.render('cars', {
         cars: cars
     })
 })

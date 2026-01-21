@@ -8,35 +8,11 @@
     <link rel="stylesheet" href="/Stylesheets/style.css">
 </head>
 <body>
-
     <ul>
         <li><a href="/">Home</a></li>
         <li><a href="/cars">Cars</a></li>
     </ul>
-
-
-    <h1>Cars recorded:</h1>
-
-    <table>
-        <tr>
-            <th>Registration number</th>
-            <th>Car make</th>
-            <th>Car colour</th>
-            <th>Image name</th>
-            <th>time</th>
-        </tr>
-        <% cars.forEach( car => { %>
-            <tr>
-                <th ><a href="/cars/<%=car.image_name%>"><%= car.registration_number %></a></th>
-                <th><%= car.make %></th>
-                <th><%= car.Colour %></th>
-                <th><%= car.image_name %></th>
-                <th><%= car.time %></th>
-                <th><button style="background-color: red; color: white;" onclick="handleDelete('<%= car.image_name %>')">Delete</button></th>
-            </tr>
-        <% }) %>
-    </table>
-
-    <script src="/Javascripts/cars.js"></script>
+    
+    <h1>Home page</h1>
 </body>
 </html>
