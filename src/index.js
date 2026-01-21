@@ -3,6 +3,7 @@ import dotenv  from "dotenv"
 import path from "path"
 import { getCars } from "./Config/database.js"
 import { carsRouter } from "./Routes/cars.js"
+import { videoStreamRouter } from "./Routes/video_stream.js"
 dotenv.config()
 
 //===================== S3 request presigner ===========================
@@ -34,6 +35,7 @@ app.set('views', path.resolve("./src/Views"))
 app.use(express.static('./src/Public'))
 
 app.use(carsRouter)
+app.use(videoStreamRouter)
 
 app.get("/", (req, res) => {
     res.render('home')

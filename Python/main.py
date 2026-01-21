@@ -1,9 +1,7 @@
 import os
 import cv2
-import time
 import random
 import string
-import boto3
 
 from detect_number_plates.predict_write_images import detect_number_plate_method
 from read_text_programs.read_image_car_plate import detect_number_plate_text
@@ -11,6 +9,7 @@ from openai_api.openai_api_read_image_text import openai_read_image
 import database.mysql_database as database
 from dvla_api.dvla_api_get_car_info import get_car_info
 from aws.s3.s3_store_number_plate import upload_number_plate_to_s3
+from image_blur.measure_image_blur import measureImageBlur
 
 
 VIDEOS_DIR = os.path.join('.', 'Python', 'videos')
@@ -22,7 +21,8 @@ ret, frame = cap.read()
 count = 0
 frame_counter = 1
 frame_read = 60 #read every 60th frame
-image_clarity_percentage_threshold = 0.19 # How clear the number plate image should be. Percentage out of 100.
+image_clarity_percentage_threshold = 0.19 # How high resolution the number plate image should be. Percentage out of 100.
+laplacian_threshold = 5 # How clear/sharp an image should be
 
 while ret:
     if frame_counter % frame_read == 0:
@@ -53,13 +53,22 @@ while ret:
 
             image_clarity_percentage = ((plate_height * plate_width) / (frame_height * frame_width)) * 100
 
-            print(f"Plate Resolution: {plate_height * plate_width}")
-            print(f"Frame Resolution: {frame_height * frame_width}")
-
-
             if image_clarity_percentage < image_clarity_percentage_threshold:
                 os.remove(plate_path)
                 print("PLATE RESOLUTION TOO LOW, DELETED.")
+        
+        # Check the image is not too blurry. laplacian value should be above the threshold
+
+        for plate in os.listdir("Python/plates"):
+            plate_path = os.path.join('Python/plates', plate)
+            img_of_plate = cv2.imread(plate_path)
+
+            laplacian_var = measureImageBlur(img_of_plate)
+            print(F"PLATE BLUR VALUE: {laplacian_var}")
+
+            if laplacian_var < 5:
+                os.remove(plate_path)
+                print("PLATE TOO BLURRY, DELETED")
 
         # 2. check if each image in Python/plates contains text. if it doesn't contain text, delete that plate file.
 
@@ -70,8 +79,8 @@ while ret:
             if detect_number_plate_text(img_of_plate) is False:
                 #False. text hasn't been detected.
                 os.remove(plate_path)
-                print("PLATE HAS BEEN DELETED!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-            
+                print("PLATE HAS BEEN DELETED!!!!!!!")
+        
 
         
         # 3. The similarity checker. if it contains plate text similar to ones already present. delete file/image.
