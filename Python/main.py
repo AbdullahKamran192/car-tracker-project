@@ -10,6 +10,7 @@ import database.mysql_database as database
 from dvla_api.dvla_api_get_car_info import get_car_info
 from aws.s3.s3_store_number_plate import upload_number_plate_to_s3
 from image_blur.measure_image_blur import measureImageBlur
+from frame_resolution.number_plate_resolution import checkNumberPlateResolution
 
 
 VIDEOS_DIR = os.path.join('.', 'Python', 'videos')
@@ -43,32 +44,11 @@ while ret:
 
         # Calculate the resolution of the number plate image divide by the frame. If percentage it's below a threshold, the number plate image is blurry, too far, delete it.
 
-        frame_height, frame_width, channels = frame.shape
-
-        for plate in os.listdir("Python/plates"):
-            plate_path = os.path.join('Python/plates', plate)
-            img_of_plate = cv2.imread(plate_path)
-
-            plate_height, plate_width, channels = img_of_plate.shape
-
-            image_clarity_percentage = ((plate_height * plate_width) / (frame_height * frame_width)) * 100
-
-            if image_clarity_percentage < image_clarity_percentage_threshold:
-                os.remove(plate_path)
-                print("PLATE RESOLUTION TOO LOW, DELETED.")
+        checkNumberPlateResolution(frame)
         
         # Check the image is not too blurry. laplacian value should be above the threshold
 
-        for plate in os.listdir("Python/plates"):
-            plate_path = os.path.join('Python/plates', plate)
-            img_of_plate = cv2.imread(plate_path)
-
-            laplacian_var = measureImageBlur(img_of_plate)
-            print(F"PLATE BLUR VALUE: {laplacian_var}")
-
-            if laplacian_var < 5:
-                os.remove(plate_path)
-                print("PLATE TOO BLURRY, DELETED")
+        measureImageBlur()
 
         # 2. check if each image in Python/plates contains text. if it doesn't contain text, delete that plate file.
 
