@@ -3,13 +3,13 @@ import os
 from ultralytics import YOLO
 import cv2
 
-def detect_number_plate_method(frame):
+model_path = os.path.join('.', 'Python', 'runs', 'detect', 'train', 'weights', 'last.pt')
+
+# Load a model
+model = YOLO(model_path)  # load a custom model
+
+def detect_number_plate_method(frame, array_of_plates_images):
     H, W, _ = frame.shape
-
-    model_path = os.path.join('.', 'Python', 'runs', 'detect', 'train', 'weights', 'last.pt')
-
-    # Load a model
-    model = YOLO(model_path)  # load a custom model
 
     threshold = 0.5
 
@@ -31,7 +31,9 @@ def detect_number_plate_method(frame):
             
             img_roi = frame[int(y1): int(y2), int(x1): int(x2)]
 
-            cv2.imwrite(f"Python/plates/plate{img_counter}.jpg", img_roi)
+            #cv2.imwrite(f"Python/plates/plate{img_counter}.jpg", img_roi)
+            array_of_plates_images.append(img_roi)
             img_counter += 1
 
     cv2.destroyAllWindows()
+    return array_of_plates_images

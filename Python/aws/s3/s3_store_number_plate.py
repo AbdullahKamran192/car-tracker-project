@@ -1,6 +1,9 @@
 import boto3
 from dotenv import load_dotenv
 import os
+from PIL import Image
+import requests
+from io import BytesIO
 
 #Load environment variables from the .env file (if present)
 load_dotenv()
@@ -18,5 +21,5 @@ s3_client = boto3.client(
         aws_secret_access_key=AWS_SECRET_KEY
 )
 
-def upload_number_plate_to_s3(file_path, file_name):
+def upload_current_frame_to_s3(file_path, file_name):
     response = s3_client.upload_file(file_path, AWS_S3_BUCKET_NAME, file_name)

@@ -77,15 +77,21 @@ def read_adjusted_image_method(img, thresh_value=100):
     return ""
 
 
-#detect_number_plate_text() checks if an image contains text and returns TRUE or FALSE.
-def detect_number_plate_text(frame):
+def detect_number_plate_text(array_of_plates_images):
+    if array_of_plates_images is None:
+        return []
     
-    try:
-        plate_text = read_adjusted_image_method(frame)
-        
-        if plate_text and len(plate_text) > 0:
-            return True
-        else:
-            return False
-    except Exception:
-        print("Something went wrong")
+    kept = []
+
+    for plate_image in array_of_plates_images:
+        try:
+            plate_text = read_adjusted_image_method(plate_image)
+
+            if plate_text and len(plate_text) > 0:
+                kept.append(plate_image)
+
+        except Exception as e:
+            print("Something went wrong:", e)
+
+    return kept  # always a list
+
